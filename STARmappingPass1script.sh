@@ -1,0 +1,10 @@
+#! /bin/bash
+
+for i in "lin1-1" "lin1-2" "lin1-3" "lin2-1" "lin2-2" "lin2-3" "lin3-1" "lin3-2" "lin3-3" "rat1-1" "rat1-2" "rat1-3" "rat2-1" "rat2-2" "rat2-3" "rat3-1" "rat3-2" "rat3-3"
+do
+STAR --genomeDir CrattaniiGenome \
+--readFilesIn /$i\_R1.fastq /$i\_R2.fastq \
+--outFileNamePrefix CollinsiaRNAalignment/Pass1/$i \
+--outSAMtype BAM SortedByCoordinate \
+--runThreadN 16
+done

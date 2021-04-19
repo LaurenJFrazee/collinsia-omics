@@ -1,0 +1,21 @@
+#to be done in command line / Terminal + connected to HPC cluster w/omics data
+
+#verify raw read quality (install reference: https://raw.githubusercontent.com/s-andrews/FastQC/master/INSTALL.txt)
+./fastqc lin1-1_R1.fastq lin1-1_R2.fastq lin1-2_R1.fastq lin1-2_R2.fastq lin1-3_R1.fastq lin1-3_R2.fastq lin2-1_R1.fastq lin2-1_R2.fastq lin2-2_R1.fastq lin2-2_R2.fastq lin2-3_R1.fastq lin2-3_R2.fastq lin3-1_R1.fastq lin3-1_R2.fastq lin3-2_R1.fastq lin3-2_R2.fastq lin3-3_R1.fastq lin3-3_R2.fastq rat1-1_R1.fastq rat1-1_R2.fastq rat1-2_R1.fastq rat1-2_R2.fastq rat1-3_R1.fastq rat1-3_R2.fastq rat2-1_R1.fastq rat2-1_R2.fastq rat2-2_R1.fastq rat2-2_R2.fastq rat2-3_R1.fastq rat2-3_R2.fastq rat3-1_R1.fastq rat3-1_R2.fastq rat3-2_R1.fastq rat3-2_R2.fastq rat3-3_R1.fastq rat3-3_R2.fastq --outdir=~/FastQCoutput/
+
+#to align the raw read sequences to the C. rattanii genome (ref: https://github.com/alexdobin/STAR)
+#first create genome index (ref: https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)
+STAR --runMode genomeGenerate --genomeChrBinNbits 18 --sjdbGTFtagExonParentTranscript Parent --sjdbGTFfeatureExon CDS --sjdbGTFfile CrattaniiGenome/CORA.gff --genomeDir CrattaniiGenome --genomeFastaFiles CrattaniiGenome/rattanii_manual_breaks_bamfilt.final.fasta --runThreadN 10
+
+#to map reads to genome (1st pass)
+#run this which not only runs the script but also sets the results of running the script (i.e., not the results of the alignment) with convenient names
+nohup ./STARmappingPass1script.sh > STARmappingPass1.out 2>STARmappingPass1.err &
+
+#to re-map to genome (2nd pass)
+nohup ./STARmappingPass2script.sh > STARmappingPass2.out 2>STARmappingPass2.err &
+
+#look at results of alignment
+cd CollinsiaRNAalignment/Pass2
+less *.final.out   #to scroll through full output files for each sample or
+grep  "Uniquely mapped reads"  *.final.out
+
